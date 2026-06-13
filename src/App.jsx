@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Routes, Route } from "react-router-dom";
 import Hero from "./components/Hero";
 import BranchSelector from "./components/BranchSelector";
 import MenuSection from "./components/MenuSection";
@@ -7,18 +8,26 @@ import CustomerForm from "./components/CustomerForm";
 import Reviews from "./components/Reviews";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import AdminPanel from "./pages/AdminPanel";
 
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Storefront />} />
+      <Route path="/admin" element={<AdminPanel />} />
+    </Routes>
+  );
+}
+
+function Storefront() {
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("");
   const menuRef = useRef(null);
 
-  // Cart total
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
-  // Add item to cart
   const handleAdd = (item) => {
     setCart((prev) => {
       const existing = prev.find((i) => i.id === item.id);
@@ -49,7 +58,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Sticky Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-30 bg-black bg-opacity-90 backdrop-blur-sm border-b border-gray-900 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-xl">🍕</span>
@@ -80,7 +88,6 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Page content offset for fixed nav */}
       <div className="pt-14">
         <Hero onOrderNow={scrollToMenu} />
         <BranchSelector selectedBranch={selectedBranch} onSelect={setSelectedBranch} />
@@ -100,7 +107,6 @@ export default function App() {
         <Footer />
       </div>
 
-      {/* Fixed cart FAB on mobile */}
       {cartCount > 0 && (
         <button
           onClick={() => setCartOpen(true)}
@@ -113,7 +119,6 @@ export default function App() {
         </button>
       )}
 
-      {/* Cart Drawer */}
       <CartDrawer
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
